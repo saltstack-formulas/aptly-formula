@@ -1,0 +1,3 @@
+aptly:
+  homedir: /var/lib/aptly
+  rootdir: /var/lib/aptly/.aptly

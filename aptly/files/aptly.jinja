@@ -1,0 +1,8 @@
+server {
+        root /var/lib/aptly/.aptly/public;
+        server_name {{ salt['pillar.get']('aptly:server_name') }};
+
+        location / {
+                autoindex on;
+        }
+}

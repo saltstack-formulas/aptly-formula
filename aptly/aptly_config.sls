@@ -28,7 +28,7 @@ aptly_conf:
   file:
     - managed
     - name: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}/.aptly.conf
-    - source: salt://aptly/files/.aptly.conf
+    - source: salt://aptly/files/.aptly.conf.jinja
     - template: jinja
     - user: aptly
     - group: aptly
@@ -46,18 +46,20 @@ aptly_gpg_key_dir:
     - require:
       - file: aptly_homedir
 
-#import_gpg_pub_key:
-#  cmd:
-#    - run
-#    - name: gpg --import {key.key}
-#    - unless: 'key_name' in gpg --list-keys
-#    - require:
-#      - file: aptly_gpg_key_dir
+import_gpg_pub_key:
+  cmd:
+    - run
+    - name: gpg --import {{ salt['pillar.get']('aptly:pub_key', '') }}
+    - user: aptly
+    - unless: '{{ salt['pillar.get']('aptly:pub_key', '') }}' in gpg --list-keys
+    - require:
+      - file: aptly_gpg_key_dir
 
-#import_gpg_priv_key:
-#  cmd:
-#    - run
-#    - name: gpg --allow-secret-key-import --import {private.key}
-#    - unless: 'key_name' in gpg --list-keys
-#    - require:
-#      - file: aptly_gpg_key_dir
+import_gpg_priv_key:
+  cmd:
+    - run
+    - name: gpg --allow-secret-key-import --import {{ salt['pillar.get']('aptly:pub_key', '') }}
+    - user: aptly
+    - unless: '{{ salt['pillar.get']('aptly:pub_key', ) }}' in gpg --list-keys
+    - require:
+      - file: aptly_gpg_key_dir

@@ -58,7 +58,7 @@ import_gpg_pub_key:
 import_gpg_priv_key:
   cmd:
     - run
-    - name: gpg --allow-secret-key-import --import {{ salt['pillar.get']('aptly:pub_key', '') }}
+    - name: gpg --allow-secret-key-import --import {{ salt['pillar.get']('aptly:priv_key', '') }}
     - user: aptly
     - unless: '{{ salt['pillar.get']('aptly:pub_key', ) }}' in gpg --list-keys
     - require:

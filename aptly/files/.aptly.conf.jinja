@@ -6,8 +6,13 @@
   "dependencyFollowRecommends": false,
   "dependencyFollowAllVariants": false,
   "dependencyFollowSource": false,
+{% if salt['pillar.get']('aptly:secure') %}
   "gpgDisableSign": false,
   "gpgDisableVerify": false,
+{% else %}
+  "gpgDisableSign": false,
+  "gpgDisableVerify": false,
+{% endif %}
   "downloadSourcePackages": false,
   "ppaDistributorID": "ubuntu",
   "ppaCodename": ""

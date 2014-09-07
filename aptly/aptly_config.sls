@@ -1,9 +1,6 @@
 include:
   - aptly
 
-include:
-  - aptly
-
 aptly_homedir:
   file:
     - directory
@@ -36,6 +33,7 @@ aptly_conf:
     - require:
       - file: aptly_homedir
 
+{% if {{ salt['pillar.get']('aptly:secure') %}
 aptly_gpg_key_dir:
   file:
     - directory
@@ -45,6 +43,28 @@ aptly_gpg_key_dir:
     - mode: 700
     - require:
       - file: aptly_homedir
+
+gpg_priv_key:
+  file:
+    - managed
+    - name: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}/.gnupg/secret.gpg
+    - source: salt://aptly/files/secret.gpg
+    - user: aptly
+    - group: aptly
+    - mode: 700
+    - require:
+      - file: aptly_gpg_key_dir
+
+gpg_pub_key:
+  file:
+    - managed
+    - name: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}/.aptly/public.gpg 
+    - source: salt://aptly/files/public.gpg
+    - user: aptly
+    - group: aptly
+    - mode: 755
+    - require:
+      - file: aptly_gpg_key_dir
 
 import_gpg_pub_key:
   cmd:
@@ -63,3 +83,4 @@ import_gpg_priv_key:
     - unless: '{{ salt['pillar.get']('aptly:pub_key', ) }}' in gpg --list-keys
     - require:
       - file: aptly_gpg_key_dir
+{% endif %}

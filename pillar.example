@@ -1,0 +1,24 @@
+
+aptly:
+  homedir: /var/lib/aptly
+  rootdir: /var/lib/aptly/repo
+  repos:
+    repo01:
+      distribution: wheezy
+      comment: "Software Repo"
+      pkgdir: /srv/pkgs
+  secure: True
+  gpg_keypair_id: 00000000
+  gpg_passphrase: 'my voice is my passport'
+  gpg_pub_key: |
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
+      Version: GnuPG v1.4.12 (GNU/Linux)
+
+      ....
+      -----END PGP PUBLIC KEY BLOCK-----
+  gpg_priv_key: |
+      -----BEGIN PGP PRIVATE KEY BLOCK-----
+      Version: GnuPG v1.4.12 (GNU/Linux)
+
+      ....
+      -----END PGP PRIVATE KEY BLOCK-----

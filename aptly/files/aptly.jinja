@@ -1,5 +1,5 @@
 server {
-        root /var/lib/aptly/.aptly/public;
+        root {{ salt['pillar.get']('aptly:rootdir') }}/public;
         server_name {{ salt['pillar.get']('aptly:server_name') }};
 
         location / {

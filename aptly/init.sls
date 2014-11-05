@@ -16,6 +16,10 @@ aptly:
     - name: aptly
     - refresh: True
 
+# dependency for publishing
+bzip2:
+  pkg.installed
+
 aptly_user:
   user:
     - present

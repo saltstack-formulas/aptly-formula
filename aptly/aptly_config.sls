@@ -33,7 +33,7 @@ aptly_conf:
     - require:
       - file: aptly_homedir
 
-{% if {{ salt['pillar.get']('aptly:secure') %}
+{% if salt['pillar.get']('aptly:secure') %}
 aptly_gpg_key_dir:
   file:
     - directory
@@ -44,11 +44,16 @@ aptly_gpg_key_dir:
     - require:
       - file: aptly_homedir
 
+{% set gpgprivfile = '{}/.gnupg/secret.gpg'.format(salt['pillar.get']('aptly:homedir', '/var/lib/aptly')) %}
+# goes in a different path so it's fetchable by the pkgrepo module
+{% set gpgpubfile = '{}/public.gpg'.format(salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly')) %}
+{% set gpgid = salt['pillar.get']('aptly:gpg_keypair_id', '') %}
+
 gpg_priv_key:
   file:
     - managed
-    - name: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}/.gnupg/secret.gpg
-    - source: salt://aptly/files/secret.gpg
+    - name: {{ gpgprivfile }}
+    - contents_pillar: aptly:gpg_priv_key
     - user: aptly
     - group: aptly
     - mode: 700
@@ -58,8 +63,8 @@ gpg_priv_key:
 gpg_pub_key:
   file:
     - managed
-    - name: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}/.aptly/public.gpg 
-    - source: salt://aptly/files/public.gpg
+    - name: {{ gpgpubfile }}
+    - contents_pillar: aptly:gpg_pub_key
     - user: aptly
     - group: aptly
     - mode: 755
@@ -69,18 +74,18 @@ gpg_pub_key:
 import_gpg_pub_key:
   cmd:
     - run
-    - name: gpg --import {{ salt['pillar.get']('aptly:pub_key', '') }}
+    - name: gpg --import {{ gpgpubfile }}
     - user: aptly
-    - unless: '{{ salt['pillar.get']('aptly:pub_key', '') }}' in gpg --list-keys
+    - unless: gpg --list-keys | grep '{{ gpgid }}'
     - require:
       - file: aptly_gpg_key_dir
 
 import_gpg_priv_key:
   cmd:
     - run
-    - name: gpg --allow-secret-key-import --import {{ salt['pillar.get']('aptly:priv_key', '') }}
+    - name: gpg --allow-secret-key-import --import {{ gpgprivfile }}
     - user: aptly
-    - unless: '{{ salt['pillar.get']('aptly:pub_key', ) }}' in gpg --list-keys
+    - unless: gpg --list-secret-keys | grep '{{ gpgid }}'
     - require:
       - file: aptly_gpg_key_dir
 {% endif %}

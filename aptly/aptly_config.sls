@@ -46,8 +46,13 @@ aptly_gpg_key_dir:
 
 {% set gpgprivfile = '{}/.gnupg/secret.gpg'.format(salt['pillar.get']('aptly:homedir', '/var/lib/aptly')) %}
 # goes in a different path so it's fetchable by the pkgrepo module
-{% set gpgpubfile = '{}/public.gpg'.format(salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly')) %}
+{% set gpgpubfile = '{}/public/public.gpg'.format(salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly')) %}
 {% set gpgid = salt['pillar.get']('aptly:gpg_keypair_id', '') %}
+
+{{ salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly') }}/public:
+  file.directory:
+    - user: aptly
+    - group: aptly
 
 gpg_priv_key:
   file:

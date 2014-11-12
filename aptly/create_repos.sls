@@ -1,12 +1,13 @@
-# Set up our trusty repos
+# Set up our Aptly repos
 
 include:
   - aptly
   - aptly.aptly_config
 
 {% for repo, opts in salt['pillar.get']('aptly:repos').items() %}
-create-{{ repo }}-repo:
-  cmd.run:
+create_{{ repo }}_repo:
+  cmd:
+    - run
     - name: aptly repo create -distribution="{{ opts['distribution'] }}" -comment="{{ opts['comment'] }}" {{ repo }}
     - unless: aptly repo show {{ repo }}
     - user: aptly
@@ -14,12 +15,13 @@ create-{{ repo }}-repo:
       - sls: aptly.aptly_config
 
   {% if opts['pkgdir'] %}
-add-{{ repo }}-pkgs:
-  cmd.run:
+add_{{ repo }}_pkgs:
+  cmd:
+    - run
     - name: aptly repo add {{ repo }} {{ opts['pkgdir'] }}
     - user: aptly
     - require:
-      - cmd: create-{{ repo }}-repo
+      - cmd: create_{{ repo }}_repo
   {% endif %}
 
 {% endfor %}

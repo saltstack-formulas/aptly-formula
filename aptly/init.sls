@@ -18,7 +18,8 @@ aptly:
 
 # dependency for publishing
 bzip2:
-  pkg.installed
+  pkg:
+    - installed
 
 aptly_user:
   user:

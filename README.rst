@@ -19,7 +19,28 @@ Available states
 ``aptly``
 ---------
 
+Setup the Aptly repo, install the Aptly and bzip2 packages, and create the Aptly user.
 
-``aptly.``
---------------
+``aptly.aptly_config``
+----------
 
+Set up the directories and files required for Aptly, and import the gpg keys.
+
+``aptly.create_repos``
+----------
+
+Create the repos specified in Pillar.
+
+``aptly.nginx``
+----------
+
+Create the sites-enabled file for Nginx.
+
+``aptly.publish_repos``
+----------
+
+Publish the repositories.
+
+Dependencies:
+
+* `Nginx <https://github.com/saltstack-formulas/nginx-formula>`_

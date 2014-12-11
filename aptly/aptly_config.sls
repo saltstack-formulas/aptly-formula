@@ -49,8 +49,10 @@ aptly_gpg_key_dir:
 {% set gpgpubfile = '{}/public/public.gpg'.format(salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly')) %}
 {% set gpgid = salt['pillar.get']('aptly:gpg_keypair_id', '') %}
 
-{{ salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly') }}/public:
-  file.directory:
+aptly_pubdir:
+  file:
+    - directory
+    - name: {{ salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly') }}/public
     - user: aptly
     - group: aptly
 

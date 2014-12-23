@@ -5,8 +5,9 @@ include:
 {% set gpgpassphrase = salt['pillar.get']('aptly:gpg_passphrase', '') %}
 
 {% for repo, opts in salt['pillar.get']('aptly:repos').items() %}
-publish-{{ repo }}-repo:
-  cmd.run:
+publish_{{ repo }}_repo:
+  cmd:
+    - run
     - name: aptly publish repo -gpg-key='{{ gpgid }}' -passphrase='{{ gpgpassphrase }}' {{ repo }}
     - user: aptly
     - unless: aptly publish update -gpg-key='{{ gpgid }}' -passphrase='{{ gpgpassphrase }}' {{ opts['distribution'] }}

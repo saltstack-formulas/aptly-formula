@@ -79,18 +79,18 @@ gpg_pub_key:
 import_gpg_pub_key:
   cmd:
     - run
-    - name: gpg --import {{ gpgpubfile }}
+    - name: gpg --no-tty --import {{ gpgpubfile }}
     - user: aptly
-    - unless: gpg --list-keys | grep '{{ gpgid }}'
+    - unless: gpg --no-tty --list-keys | grep '{{ gpgid }}'
     - require:
       - file: aptly_gpg_key_dir
 
 import_gpg_priv_key:
   cmd:
     - run
-    - name: gpg --allow-secret-key-import --import {{ gpgprivfile }}
+    - name: gpg --no-tty --allow-secret-key-import --import {{ gpgprivfile }}
     - user: aptly
-    - unless: gpg --list-secret-keys | grep '{{ gpgid }}'
+    - unless: gpg --no-tty --list-secret-keys | grep '{{ gpgid }}'
     - require:
       - file: aptly_gpg_key_dir
 {% endif %}

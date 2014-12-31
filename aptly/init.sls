@@ -1,6 +1,5 @@
 aptly_repo:
-  pkgrepo:
-    - managed
+  pkgrepo.managed:
     - humanname: Aptly PPA
     - name: deb http://repo.aptly.info/ squeeze main
     - dist: squeeze
@@ -11,19 +10,16 @@ aptly_repo:
       - pkg: aptly
 
 aptly:
-  pkg:
-    - installed
+  pkg.installed:
     - name: aptly
     - refresh: True
 
 # dependency for publishing
 bzip2:
-  pkg:
-    - installed
+  pkg.installed:
 
 aptly_user:
-  user:
-    - present
+  user.present:
     - name: aptly
     - shell: /bin/bash
     - home: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}

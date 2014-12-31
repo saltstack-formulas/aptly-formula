@@ -6,8 +6,7 @@ include:
 
 {% for repo, opts in salt['pillar.get']('aptly:repos').items() %}
 create_{{ repo }}_repo:
-  cmd:
-    - run
+  cmd.run:
     - name: aptly repo create -distribution="{{ opts['distribution'] }}" -comment="{{ opts['comment'] }}" {{ repo }}
     - unless: aptly repo show {{ repo }}
     - user: aptly
@@ -16,8 +15,7 @@ create_{{ repo }}_repo:
 
   {% if opts['pkgdir'] %}
 add_{{ repo }}_pkgs:
-  cmd:
-    - run
+  cmd.run:
     - name: aptly repo add {{ repo }} {{ opts['pkgdir'] }}
     - user: aptly
     - require:

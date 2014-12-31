@@ -6,8 +6,7 @@ include:
 
 {% for repo, opts in salt['pillar.get']('aptly:repos').items() %}
 publish_{{ repo }}_repo:
-  cmd:
-    - run
+  cmd.run:
     # NOTE: You may have to run this command manually the first time. The next
     # version of aptly is supposed to have a -batch option to pass -no-tty to
     # the gpg calls.

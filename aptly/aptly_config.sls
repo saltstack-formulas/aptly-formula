@@ -2,8 +2,7 @@ include:
   - aptly
 
 aptly_homedir:
-  file:
-    - directory
+  file.directory:
     - name: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - user: aptly
     - group: aptly
@@ -12,8 +11,7 @@ aptly_homedir:
       - user: aptly_user
 
 aptly_rootdir:
-  file:
-    - directory
+  file.directory:
     - name: {{ salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly') }}
     - user: aptly
     - group: aptly
@@ -22,8 +20,7 @@ aptly_rootdir:
       - file: aptly_homedir
 
 aptly_conf:
-  file:
-    - managed
+  file.managed:
     - name: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}/.aptly.conf
     - source: salt://aptly/files/.aptly.conf.jinja
     - template: jinja
@@ -35,8 +32,7 @@ aptly_conf:
 
 {% if salt['pillar.get']('aptly:secure') %}
 aptly_gpg_key_dir:
-  file:
-    - directory
+  file.directory:
     - name: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}/.gnupg
     - user: aptly
     - group: aptly
@@ -50,15 +46,13 @@ aptly_gpg_key_dir:
 {% set gpgid = salt['pillar.get']('aptly:gpg_keypair_id', '') %}
 
 aptly_pubdir:
-  file:
-    - directory
+  file.directory:
     - name: {{ salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly') }}/public
     - user: aptly
     - group: aptly
 
 gpg_priv_key:
-  file:
-    - managed
+  file.managed:
     - name: {{ gpgprivfile }}
     - contents_pillar: aptly:gpg_priv_key
     - user: aptly
@@ -68,8 +62,7 @@ gpg_priv_key:
       - file: aptly_gpg_key_dir
 
 gpg_pub_key:
-  file:
-    - managed
+  file.managed:
     - name: {{ gpgpubfile }}
     - contents_pillar: aptly:gpg_pub_key
     - user: aptly
@@ -79,8 +72,7 @@ gpg_pub_key:
       - file: aptly_gpg_key_dir
 
 import_gpg_pub_key:
-  cmd:
-    - run
+  cmd.run:
     - name: gpg --no-tty --import {{ gpgpubfile }}
     - user: aptly
     - unless: gpg --no-tty --list-keys | grep '{{ gpgid }}'
@@ -88,8 +80,7 @@ import_gpg_pub_key:
       - file: aptly_gpg_key_dir
 
 import_gpg_priv_key:
-  cmd:
-    - run
+  cmd.run:
     - name: gpg --no-tty --allow-secret-key-import --import {{ gpgprivfile }}
     - user: aptly
     - unless: gpg --no-tty --list-secret-keys | grep '{{ gpgid }}'

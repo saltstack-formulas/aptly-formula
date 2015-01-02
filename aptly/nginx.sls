@@ -3,8 +3,7 @@ include:
   - nginx.config
 
 aptly_site:
-  file:
-    - managed
+  file.managed:
     - name: /etc/nginx/sites-enabled/aptly
     - source: salt://aptly/files/aptly.jinja
     - mode: 644

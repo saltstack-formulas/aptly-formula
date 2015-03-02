@@ -1,8 +1,13 @@
 aptly_repo:
   pkgrepo.managed:
     - humanname: Aptly PPA
+{% if not salt['pillar.get']('aptly:install_nightly', False) %}
     - name: deb http://repo.aptly.info/ squeeze main
     - dist: squeeze
+{% else %}
+    - name: deb http://repo.aptly.info/ nightly main
+    - dist: nightly
+{% endif %}
     - file: /etc/apt/sources.list.d/aptly.list
     - keyid: 2A194991
     - keyserver: keys.gnupg.net
@@ -10,7 +15,7 @@ aptly_repo:
       - pkg: aptly
 
 aptly:
-  pkg.installed:
+  pkg.latest:
     - name: aptly
     - refresh: True
 

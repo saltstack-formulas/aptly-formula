@@ -2,6 +2,8 @@
 aptly:
   homedir: /var/lib/aptly
   rootdir: /var/lib/aptly/repo
+  # if you get errors about tty's or just failing when it shouldn't, enable this
+  install_nightly: False
   repos:
     repo01:
       distribution: wheezy

@@ -12,6 +12,8 @@ publish_{{ repo }}_repo:
     # the gpg calls.
     - name: aptly publish repo -gpg-key='{{ gpgid }}' -passphrase='{{ gpgpassphrase }}' {{ repo }}
     - user: aptly
+    - env:
+      - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     # unless is 2014.7 only, on 2014.1 it doesn't run and you just get an error
     # saying the repo has already been published
     - unless: aptly publish update -gpg-key='{{ gpgid }}' -passphrase='{{ gpgpassphrase }}' {{ opts['distribution'] }}

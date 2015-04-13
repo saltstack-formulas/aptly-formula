@@ -6,6 +6,7 @@ aptly_site:
   file.managed:
     - name: /etc/nginx/sites-enabled/aptly
     - source: salt://aptly/files/aptly.jinja
+    - template: jinja
     - mode: 644
     - user: root
     - group: root

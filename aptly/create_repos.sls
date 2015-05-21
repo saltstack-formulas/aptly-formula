@@ -20,14 +20,14 @@ create_{{ repo }}_repo:
   {% if opts['pkgdir'] %}
     {% set numcurrentpkgs = salt['cmd.run']('aptly repo show ' ~ repo ~ ' | tail -n1 | cut -f4 -d" "', user='aptly', env="[{\'HOME\':\'' ~ homedir ~ '\'}]") %}
     {% set pkgsinpkgdir = salt['file.find']('/srv/dist/dist/repo', type='f', iregex='.*(deb|udeb|dsc)$')|count %}
-    {% if numcurrentpkgs == pkgsinpkgdir %}
+    {% if numcurrentpkgs != pkgsinpkgdir %}
       {# we already have all the packages loaded, skip #}
 add_{{ repo }}_pkgs:
   cmd.run:
     - name: aptly repo add {{ repo }} {{ opts['pkgdir'] }}
     - user: aptly
     - env:
-      - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
+      - HOME: {{ homedir }}
     - require:
       - cmd: create_{{ repo }}_repo
     {% endif %}

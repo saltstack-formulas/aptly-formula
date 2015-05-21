@@ -21,7 +21,7 @@ create_{{ repo }}_repo:
     {% set numcurrentpkgs = salt['cmd.run']('aptly repo show ' ~ repo ~ ' | tail -n1 | cut -f4 -d" "', user='aptly', env="[{\'HOME\':\'' ~ homedir ~ '\'}]") %}
     {% set pkgsinpkgdir = salt['file.find']('/srv/dist/dist/repo', type='f', iregex='.*(deb|udeb|dsc)$')|count %}
     {% if numcurrentpkgs != pkgsinpkgdir %}
-      {# we dont  have all the packages loaded, add all packages in homedir #}
+      {# we dont  have all the packages loaded, add all packages in opts['pkgdir'] #}
 add_{{ repo }}_pkgs:
   cmd.run:
     - name: aptly repo add {{ repo }} {{ opts['pkgdir'] }}

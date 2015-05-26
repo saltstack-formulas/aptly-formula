@@ -6,7 +6,7 @@
   "dependencyFollowRecommends": false,
   "dependencyFollowAllVariants": false,
   "dependencyFollowSource": false,
-{%- if salt['pillar.get']('aptly:secure') -%}
+{% if salt['pillar.get']('aptly:secure') %}
   "gpgDisableSign": false,
   "gpgDisableVerify": false,
 {% else %}

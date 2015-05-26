@@ -9,12 +9,12 @@ aptly:
       pkgdir: /srv/pkgs
   secure: True
   s3Endpoints:
-    test1:
+    test:
       region: us-west-2
       bucket: bucketnamegoeshere 
       awsAccessKeyID: ""
       awsSecretAccessKey: ""
-      prefix: "test"
+      prefix: ""
       acl: "private"
       storageClass: ""
       encryptionMethod: ""

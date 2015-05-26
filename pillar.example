@@ -8,6 +8,17 @@ aptly:
       comment: "Software Repo"
       pkgdir: /srv/pkgs
   secure: True
+  s3Endpoints:
+    test1:
+      region: us-west-2
+      bucket: bucketnamegoeshere 
+      awsAccessKeyID: ""
+      awsSecretAccessKey: ""
+      prefix: "test"
+      acl: "private"
+      storageClass: ""
+      encryptionMethod: ""
+      plusWorkaround: "false"
   gpg_keypair_id: 00000000
   gpg_passphrase: 'my voice is my passport'
   gpg_pub_key: |

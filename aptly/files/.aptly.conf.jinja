@@ -6,7 +6,7 @@
   "dependencyFollowRecommends": false,
   "dependencyFollowAllVariants": false,
   "dependencyFollowSource": false,
-{% if salt['pillar.get']('aptly:secure') %}
+{%- if salt['pillar.get']('aptly:secure') -%}
   "gpgDisableSign": false,
   "gpgDisableVerify": false,
 {% else %}
@@ -16,4 +16,22 @@
   "downloadSourcePackages": false,
   "ppaDistributorID": "ubuntu",
   "ppaCodename": ""
+{%- if salt['pillar.get']('aptly:s3Endpoints') is defined -%},
+  "S3PublishEndpoints": 
+  {
+  {% for key,value in salt['pillar.get']('aptly:s3Endpoints').iteritems() -%}
+  "{{ key }}" : {
+    "region" : "{{ value.region }}",
+    "bucket": "{{ value.bucket }}",
+    "awsAccessKeyID": "{{ value.awsAccessKeyID }}",
+    "awsSecretAccessKey": "{{ value.awsSecretAccessKey }}",
+    "prefix": "{{ value.prefix }}",
+    "acl": "{{ value.acl }}",
+    "storageClass": "{{ value.storageClass }}",
+    "encryptionMethod": "{{ value.encryptionMethod }}",
+    "plusWorkaround": {{ value.plusWorkaround }}
+    }{% if not loop.last %}{{","}}{% endif %}
+  {% endfor -%}
+  }
+{% endif -%}
 }

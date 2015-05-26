@@ -16,7 +16,7 @@
   "downloadSourcePackages": false,
   "ppaDistributorID": "ubuntu",
   "ppaCodename": ""
-{%- if salt['pillar.get']('aptly:s3Endpoints') is defined -%},
+{%- if salt['pillar.get']('aptly:s3Endpoints')|length -%},
   "S3PublishEndpoints": 
   {
   {% for key,value in salt['pillar.get']('aptly:s3Endpoints').iteritems() -%}
@@ -33,5 +33,5 @@
     }{% if not loop.last %}{{","}}{% endif %}
   {% endfor -%}
   }
-{% endif -%}
+{% endif %}
 }

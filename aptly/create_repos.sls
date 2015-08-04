@@ -24,7 +24,7 @@ create_{{ repo }}_repo:
       {# we dont  have all the packages loaded, add all packages in opts['pkgdir'] #}
 add_{{ repo }}_pkgs:
   cmd.run:
-    - name: aptly repo add {{ repo }} {{ opts['pkgdir'] }}
+    - name: aptly repo add -remove-files=true {{ repo }} {{ opts['pkgdir'] }}
     - user: aptly
     - env:
       - HOME: {{ homedir }}

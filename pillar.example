@@ -1,10 +1,15 @@
-
 aptly:
   homedir: /var/lib/aptly
   rootdir: /var/lib/aptly/repo
   repos:
     repo01:
-      distribution: wheezy
+      components:
+        - main
+        - contrib
+        - non-free
+      distributions:
+        - wheezy
+        - sqeezy
       comment: "Software Repo"
       pkgdir: /srv/pkgs
   secure: True

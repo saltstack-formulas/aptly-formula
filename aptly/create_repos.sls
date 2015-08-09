@@ -6,31 +6,40 @@ include:
 
 {% for repo, opts in salt['pillar.get']('aptly:repos').items() %}
   {% set homedir = salt['pillar.get']('aptly:homedir', '/var/lib/aptly') %}
-
-create_{{ repo }}_repo:
+  {% for distribution in opts['distributions'] %}
+    {% for component in opts['components'] %}
+      {% set repo_name = repo + '_' + distribution + '_' + component %}
+create_{{ repo_name }}_repo:
   cmd.run:
-    - name: aptly repo create -distribution="{{ opts['distribution'] }}" -comment="{{ opts['comment'] }}" {{ repo }}
-    - unless: aptly repo show {{ repo }}
+    - name: aptly repo create -distribution="{{ distribution }}" -comment="{{ opts['comment'] }}" -component="{{ component }}" {{ repo_name }}
+    - unless: aptly repo show {{ repo_name }}
     - user: aptly
     - env:
       - HOME: {{ homedir }}
     - require:
       - sls: aptly.aptly_config
 
-  {% if opts['pkgdir'] %}
-    {% set numcurrentpkgs = salt['cmd.run']('aptly repo show ' ~ repo ~ ' | tail -n1 | cut -f4 -d" "', user='aptly', env="[{\'HOME\':\'' ~ homedir ~ '\'}]") %}
-    {% set pkgsinpkgdir = salt['file.find']('/srv/dist/dist/repo', type='f', iregex='.*(deb|udeb|dsc)$')|count %}
-    {% if numcurrentpkgs != pkgsinpkgdir %}
-      {# we dont  have all the packages loaded, add all packages in opts['pkgdir'] #}
-add_{{ repo }}_pkgs:
+      {% if opts['pkgdir'] %}
+{{ opts['pkgdir'] }}/{{ distribution }}/{{ component }}:
+  file.directory:
+    - user: root
+    - group: root
+    - mode: 777
+    - makedirs: True
+        {% set numcurrentpkgs = salt['cmd.run']('aptly repo show ' ~ repo_name ~ ' | tail -n1 | cut -f4 -d" "', user='aptly', env="[{\'HOME\':\'' ~ homedir ~ '\'}]") %}
+        {% set pkgsinpkgdir = salt['file.find']('/srv/dist/dist/repo', type='f', iregex='.*(deb|udeb|dsc)$')|count %}
+        {% if numcurrentpkgs != pkgsinpkgdir %}
+          {# we dont  have all the packages loaded, add all packages in opts['pkgdir'] #}
+add_{{ repo_name }}_pkgs:
   cmd.run:
-    - name: aptly repo add {{ repo }} {{ opts['pkgdir'] }}
+    - name: aptly repo add -remove-files=true {{ repo_name }} {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }}
     - user: aptly
     - env:
       - HOME: {{ homedir }}
     - require:
-      - cmd: create_{{ repo }}_repo
-    {% endif %}
-  {% endif %}
-
+      - cmd: create_{{ repo_name }}_repo
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
 {% endfor %}

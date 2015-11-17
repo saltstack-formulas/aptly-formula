@@ -17,9 +17,9 @@
   "ppaDistributorID": "ubuntu",
   "ppaCodename": ""
 {%- if salt['pillar.get']('aptly:s3Endpoints')|length -%},
-  "S3PublishEndpoints": 
+  "S3PublishEndpoints":
   {
-  {% for key,value in salt['pillar.get']('aptly:s3Endpoints').iteritems() -%}
+  {% for key,value in salt['pillar.get']('aptly:s3Endpoints').items() -%}
   "{{ key }}" : {
     "region" : "{{ value.region }}",
     "bucket": "{{ value.bucket }}",

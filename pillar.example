@@ -12,11 +12,20 @@ aptly:
         - sqeezy
       comment: "Software Repo"
       pkgdir: /srv/pkgs
+  mirrors:
+    salt-main:
+      url: http://repo.saltstack.com/apt/ubuntu/ubuntu14/latest
+      distribution: trusty
+      components:
+        - main
+      keyid: DE57BFBE
+      architectures:
+        - amd64
   secure: True
   s3Endpoints:
     test:
       region: us-west-2
-      bucket: bucketnamegoeshere 
+      bucket: bucketnamegoeshere
       awsAccessKeyID: ""
       awsSecretAccessKey: ""
       prefix: ""

@@ -31,6 +31,11 @@ Set up the directories and files required for Aptly, and import the gpg keys.
 
 Create the repos specified in Pillar.
 
+``aptly.create_mirrors``
+----------
+
+Create the mirrors specified in Pillar.
+
 ``aptly.nginx``
 ----------
 

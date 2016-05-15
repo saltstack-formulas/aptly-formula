@@ -1,7 +1,7 @@
 {
   "rootDir": "{{ salt['pillar.get']('aptly:rootdir') }}",
   "downloadConcurrency": 4,
-  "architectures": [{{ salt['pillar.get']('aptly:architectures') }}],
+  "architectures": [{{ salt['pillar.get']('aptly:architectures', '') }}],
   "dependencyFollowSuggests": false,
   "dependencyFollowRecommends": false,
   "dependencyFollowAllVariants": false,

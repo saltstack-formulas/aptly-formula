@@ -1,6 +1,7 @@
 aptly:
   homedir: /var/lib/aptly
   rootdir: /var/lib/aptly/repo
+  architectures: '"amd64", "i386", "all", "source"'
   repos:
     repo01:
       components:

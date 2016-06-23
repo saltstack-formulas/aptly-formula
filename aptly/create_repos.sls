@@ -19,7 +19,7 @@ create_{{ repo_name }}_repo:
     - require:
       - sls: aptly.aptly_config
 
-      {% if opts['pkgdir'] %}
+      {% if opts.get('pkgdir', false) %}
 {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }}:
   file.directory:
     - user: root

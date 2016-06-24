@@ -1,7 +1,13 @@
+{% set architectures = salt['pillar.get']('aptly:architectures', []) %}
 {
   "rootDir": "{{ salt['pillar.get']('aptly:rootdir') }}",
   "downloadConcurrency": 4,
-  "architectures": {{ salt['pillar.get']('aptly:architectures', [])|json }},
+  {# this is to remain backwards compatability to when pillars accepted a comma delimited string, preferred method is a list #}
+  {%- if architectures is string -%}
+  "architectures": [{{ architectures }}],
+  {% else %}
+  "architectures": {{ architectures|json }},
+  {%- endif -%}
   "dependencyFollowSuggests": false,
   "dependencyFollowRecommends": false,
   "dependencyFollowAllVariants": false,

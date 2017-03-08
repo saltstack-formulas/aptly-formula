@@ -36,6 +36,8 @@ add_{{ repo_name }}_pkgs:
     - user: aptly
     - env:
       - HOME: {{ homedir }}
+    - onlyif:
+      - find {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }} -type f -mindepth 1 -print -quit | grep -q .
     - require:
       - cmd: create_{{ repo_name }}_repo
         {% endif %}

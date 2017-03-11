@@ -19,7 +19,7 @@ create_{{ repo_name }}_repo:
     - require:
       - sls: aptly.aptly_config
 
-      {% if opts['pkgdir'] %}
+      {% if opts.get('pkgdir', false) %}
 {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }}:
   file.directory:
     - user: root
@@ -36,6 +36,8 @@ add_{{ repo_name }}_pkgs:
     - user: aptly
     - env:
       - HOME: {{ homedir }}
+    - onlyif:
+      - find {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }} -type f -mindepth 1 -print -quit | grep -q .
     - require:
       - cmd: create_{{ repo_name }}_repo
         {% endif %}

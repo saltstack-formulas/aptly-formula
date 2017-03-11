@@ -4,7 +4,7 @@ aptly_repo:
     - name: deb http://repo.aptly.info/ squeeze main
     - dist: squeeze
     - file: /etc/apt/sources.list.d/aptly.list
-    - keyid: 2A194991
+    - keyid: 9E3E53F19C7DE460
     - keyserver: keys.gnupg.net
     - require_in:
       - pkg: aptly
@@ -25,3 +25,10 @@ aptly_user:
     - home: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - require:
       - pkg: aptly
+    {% if salt['pillar.get']('aptly:user:uid', 0) %}
+    - uid: {{ salt['pillar.get']('aptly:user:uid') }}
+    {% endif %}
+    {% if salt['pillar.get']('aptly:user:gid', 0) %}
+    - gid: {{ salt['pillar.get']('aptly:user:gid') }}
+    - gid_from_name: True
+    {% endif %}

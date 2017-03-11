@@ -24,14 +24,27 @@ create_{{ mirror }}_mirror:
       - HOME: {{ homedir }}
     - require:
       - sls: aptly.aptly_config
+{% if opts['keyids'] is defined %}
+{% for keyid in opts['keyids'] %}
+      - cmd: add_{{ keyid }}_gpg_key
+{% endfor %}
+
+{% for keyid in opts['keyids'] %}
+add_{{keyid}}_gpg_key:
+  cmd.run:
+    - name: gpg --no-default-keyring --keyring {{ keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{keyid}}
+    - user: aptly
+{% endfor %}
+  {% elif opts['keyid'] is defined %}
       - cmd: add_{{ mirror }}_gpg_key
 
-  {% if opts['keyid'] is defined %}
 add_{{ mirror }}_gpg_key:
   cmd.run:
     - name: gpg --no-default-keyring --keyring {{ keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{ opts['keyid'] }}
     - user: aptly
   {% elif opts['key_url'] is defined %}
+      - cmd: add_{{ mirror }}_gpg_key
+
 add_{{ mirror }}_gpg_key:
   cmd.run:
     - name: gpg --no-default-keyring --keyring {{ keyring }} --fetch-keys {{ opts['key_url'] }}

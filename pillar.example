@@ -1,7 +1,11 @@
 aptly:
   homedir: /var/lib/aptly
   rootdir: /var/lib/aptly/repo
-  architectures: '"amd64", "i386", "all", "source"'
+  architectures:
+    - amd64
+    - i386
+    - all
+    - source
   repos:
     repo01:
       components:
@@ -14,12 +18,24 @@ aptly:
       comment: "Software Repo"
       pkgdir: /srv/pkgs
   mirrors:
+    google-earth-main:
+      url: http://dl.google.com/linux/earth/deb/
+      distribution: stable
+      components:
+        - main
+      keyids:
+        - 7FAC5991
+        - 640DB551
+      architectures:
+        - amd64
+      prefix: "google-earth-main"
     salt-main:
       url: http://repo.saltstack.com/apt/ubuntu/ubuntu14/latest
       distribution: trusty
       components:
         - main
-      keyid: DE57BFBE
+      keyid:
+        - DE57BFBE
       architectures:
         - amd64
   secure: True

@@ -16,6 +16,7 @@ aptly_rootdir:
     - user: aptly
     - group: aptly
     - mode: 755
+    - makedirs: True
     - require:
       - file: aptly_homedir
 

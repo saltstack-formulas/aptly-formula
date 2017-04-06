@@ -32,7 +32,7 @@ create_{{ repo_name }}_repo:
           {# we dont  have all the packages loaded, add all packages in opts['pkgdir'] #}
 add_{{ repo_name }}_pkgs:
   cmd.run:
-    - name: aptly repo add -remove-files=true {{ repo_name }} {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }}
+    - name: aptly repo add -force-replace=true -remove-files=true {{ repo_name }} {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }}
     - user: aptly
     - env:
       - HOME: {{ homedir }}

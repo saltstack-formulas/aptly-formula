@@ -1,3 +1,5 @@
+{% set gpg_command = salt['pillar.get']('aptly:gpg_command', 'gpg') %}
+
 include:
   - aptly
 
@@ -74,9 +76,9 @@ gpg_pub_key:
 
 import_gpg_pub_key:
   cmd.run:
-    - name: gpg --no-tty --import {{ gpgpubfile }}
+    - name: { gpg_command }} --no-tty --import {{ gpgpubfile }}
     - user: aptly
-    - unless: gpg --no-tty --list-keys | grep '{{ gpgid }}'
+    - unless: { gpg_command }} --no-tty --list-keys | grep '{{ gpgid }}'
     - env:
       - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - require:
@@ -84,9 +86,9 @@ import_gpg_pub_key:
 
 import_gpg_priv_key:
   cmd.run:
-    - name: gpg --no-tty --allow-secret-key-import --import {{ gpgprivfile }}
+    - name: { gpg_command }} --no-tty --allow-secret-key-import --import {{ gpgprivfile }}
     - user: aptly
-    - unless: gpg --no-tty --list-secret-keys | grep '{{ gpgid }}'
+    - unless: { gpg_command }} --no-tty --list-secret-keys | grep '{{ gpgid }}'
     - env:
       - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - require:

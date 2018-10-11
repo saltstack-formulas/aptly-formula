@@ -50,6 +50,7 @@ aptly:
       storageClass: ""
       encryptionMethod: ""
       plusWorkaround: "false"
+  gpg_command: 'gpg'
   gpg_keypair_id: 00000000
   gpg_passphrase: 'my voice is my passport'
   gpg_pub_key: |

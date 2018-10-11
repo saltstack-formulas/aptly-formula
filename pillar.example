@@ -34,7 +34,7 @@ aptly:
       distribution: trusty
       components:
         - main
-      keyid:
+      keyids:
         - DE57BFBE
       architectures:
         - amd64

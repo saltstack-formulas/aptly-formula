@@ -1,6 +1,10 @@
 aptly:
   homedir: /var/lib/aptly
   rootdir: /var/lib/aptly/repo
+  secure: True
+  use_aptly_repo: True
+  install_packages: True
+  create_user: True
   architectures:
     - amd64
     - i386
@@ -38,7 +42,6 @@ aptly:
         - DE57BFBE
       architectures:
         - amd64
-  secure: True
   s3Endpoints:
     test:
       region: us-west-2

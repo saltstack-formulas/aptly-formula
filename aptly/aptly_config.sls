@@ -9,8 +9,6 @@ aptly_homedir:
     - user: aptly
     - group: aptly
     - mode: 755
-    - require:
-      - user: aptly_user
 
 aptly_rootdir:
   file.directory:

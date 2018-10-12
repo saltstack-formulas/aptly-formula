@@ -1,5 +1,7 @@
 # Set up our Aptly mirrors
 
+{% set gpg_command = salt['pillar.get']('aptly:gpg_command', 'gpg') %}
+
 include:
   - aptly
   - aptly.aptly_config
@@ -34,26 +36,26 @@ create_{{ mirror }}_mirror:
 {% for keyid in opts['keyids'] %}
 add_{{ mirrorloop }}_{{keyid}}_gpg_key:
   cmd.run:
-    - name: gpg --no-default-keyring --keyring {{ keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{keyid}}
+    - name: { gpg_command }} --no-default-keyring --keyring {{ keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{keyid}}
     - user: aptly
-    - unless: gpg --list-keys --keyring {{ keyring }}  | grep {{keyid}}
+    - unless: { gpg_command }} --list-keys --keyring {{ keyring }}  | grep {{keyid}}
 {% endfor %}
   {% elif opts['keyid'] is defined %}
       - cmd: add_{{ mirror }}_gpg_key
 
 add_{{ mirror }}_gpg_key:
   cmd.run:
-    - name: gpg --no-default-keyring --keyring {{ keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{ opts['keyid'] }}
+    - name: { gpg_command }} --no-default-keyring --keyring {{ keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{ opts['keyid'] }}
     - user: aptly
-    - unless: gpg --list-keys --keyring {{ keyring }}  | grep {{ opts['keyid'] }}
+    - unless: { gpg_command }} --list-keys --keyring {{ keyring }}  | grep {{ opts['keyid'] }}
   {% elif opts['key_url'] is defined %}
       - cmd: add_{{ mirror }}_gpg_key
 
 add_{{ mirror }}_gpg_key:
   cmd.run:
-    - name: gpg --no-default-keyring --keyring {{ keyring }} --fetch-keys {{ opts['key_url'] }}
+    - name: { gpg_command }} --no-default-keyring --keyring {{ keyring }} --fetch-keys {{ opts['key_url'] }}
     - user: aptly
-    - unless: gpg --list-keys --keyring {{ keyring }}  | grep {{keyid}}
+    - unless: { gpg_command }} --list-keys --keyring {{ keyring }}  | grep {{keyid}}
   {% endif %}
 {% endfor %}
 {% endif %}

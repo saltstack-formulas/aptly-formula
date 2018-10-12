@@ -34,7 +34,7 @@ aptly:
       distribution: trusty
       components:
         - main
-      keyid:
+      keyids:
         - DE57BFBE
       architectures:
         - amd64
@@ -50,6 +50,7 @@ aptly:
       storageClass: ""
       encryptionMethod: ""
       plusWorkaround: "false"
+  gpg_command: 'gpg'
   gpg_keypair_id: 00000000
   gpg_passphrase: 'my voice is my passport'
   gpg_pub_key: |

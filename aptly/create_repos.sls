@@ -13,7 +13,7 @@ create_{{ repo_name }}_repo:
   cmd.run:
     - name: aptly repo create -distribution="{{ distribution }}" -comment="{{ opts['comment'] }}" -component="{{ component }}" {{ repo_name }}
     - unless: aptly repo show {{ repo_name }}
-    - user: aptly
+    - runas: aptly
     - env:
       - HOME: {{ homedir }}
     - require:
@@ -33,7 +33,7 @@ create_{{ repo_name }}_repo:
 add_{{ repo_name }}_pkgs:
   cmd.run:
     - name: aptly repo add -force-replace=true -remove-files=true {{ repo_name }} {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }}
-    - user: aptly
+    - runas: aptly
     - env:
       - HOME: {{ homedir }}
     - onlyif:

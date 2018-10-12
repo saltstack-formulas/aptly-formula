@@ -1,10 +1,16 @@
 aptly:
-  homedir: /var/lib/aptly
-  rootdir: /var/lib/aptly/repo
-  secure: True
-  use_aptly_repo: True
-  install_packages: True
-  create_user: True
+  lookup:
+    homedir: /var/lib/aptly
+    rootdir: /var/lib/aptly/repo
+    use_aptly_repo: True
+    install_packages: True
+    create_user: True
+    secure: True
+    gpg_command: 'gpg'
+    gpg_keyring: 'trustedkeys.gpg'
+    user:
+      uid: 0
+      gid: 0
   architectures:
     - amd64
     - i386
@@ -53,7 +59,6 @@ aptly:
       storageClass: ""
       encryptionMethod: ""
       plusWorkaround: "false"
-  gpg_command: 'gpg'
   gpg_keypair_id: 00000000
   gpg_passphrase: 'my voice is my passport'
   gpg_pub_key: |

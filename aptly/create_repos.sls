@@ -5,7 +5,6 @@ include:
   - aptly.aptly_config
 
 {% for repo, opts in salt['pillar.get']('aptly:repos').items() %}
-  {% set homedir = salt['pillar.get']('aptly:homedir', '/var/lib/aptly') %}
   {% for distribution in opts['distributions'] %}
     {% for component in opts['components'] %}
       {% set repo_name = repo + '_' + distribution + '_' + component %}
@@ -15,7 +14,7 @@ create_{{ repo_name }}_repo:
     - unless: aptly repo show {{ repo_name }}
     - runas: aptly
     - env:
-      - HOME: {{ homedir }}
+      - HOME: {{ aptly.homedir }}
     - require:
       - sls: aptly.aptly_config
 
@@ -35,7 +34,7 @@ add_{{ repo_name }}_pkgs:
     - name: aptly repo add -force-replace=true -remove-files=true {{ repo_name }} {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }}
     - runas: aptly
     - env:
-      - HOME: {{ homedir }}
+      - HOME: {{ aptly.homedir }}
     - onlyif:
       - find {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }} -type f -mindepth 1 -print -quit | grep -q .
     - require:

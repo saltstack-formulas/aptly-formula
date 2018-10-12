@@ -1,8 +1,6 @@
-{% set use_aptly_repo   = salt['pillar.get']('aptly:use_aptly_repo', True) %}
-{% set install_packages = salt['pillar.get']('aptly:install_packages', True) %}
-{% set create_user      = salt['pillar.get']('aptly:create_user', True) %}
+{% from "aptly/map.jinja" import aptly with context %}
 
-{% if use_aptly_repo %}
+{% if aptly.use_aptly_repo %}
 aptly_repo:
   pkgrepo.managed:
     - humanname: Aptly PPA
@@ -15,32 +13,31 @@ aptly_repo:
       - pkg: aptly_packages
 {% endif %}
 
-{% if install_packages %}
+{% if aptly.install_packages %}
 aptly_packages:
   pkg.installed:
-    pkgs:
-      - aptly
-      - bzip2
-      - gnupg1
-      - gpgv1
+    - pkgs:
+      {% for pkg in aptly.pkgs %}
+      - {{ pkg }}
+      {% endfor %}
     - refresh: True
 {% endif %}
 
-{% if create_user %}
+{% if aptly.create_user %}
 aptly_user:
   user.present:
     - name: aptly
     - shell: /bin/bash
-    - home: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
-    {% if install_packages %}
+    - home: {{ aptly.homedir }}
+    {% if aptly.install_packages %}
     - require:
       - pkg: aptly_packages
     {% endif %}
-    {% if salt['pillar.get']('aptly:user:uid', 0) %}
-    - uid: {{ salt['pillar.get']('aptly:user:uid') }}
+    {% if aptly.user.uid %}
+    - uid: {{ aptly.user.uid }}
     {% endif %}
-    {% if salt['pillar.get']('aptly:user:gid', 0) %}
-    - gid: {{ salt['pillar.get']('aptly:user:gid') }}
+    {% if aptly.user.gid %}
+    - gid: {{ aptly.user.gid }}
     - gid_from_name: True
     {% endif %}
 {% endif %}

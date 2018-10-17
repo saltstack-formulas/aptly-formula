@@ -1,3 +1,6 @@
+{% from "aptly/map.jinja" import aptly with context %}
+
+{% if aptly.use_aptly_repo %}
 aptly_repo:
   pkgrepo.managed:
     - humanname: Aptly PPA
@@ -7,28 +10,34 @@ aptly_repo:
     - keyid: ED75B5A4483DA07C
     - keyserver: keys.gnupg.net
     - require_in:
-      - pkg: aptly
+      - pkg: aptly_packages
+{% endif %}
 
-aptly:
+{% if aptly.install_packages %}
+aptly_packages:
   pkg.installed:
-    - name: aptly
+    - pkgs:
+      {% for pkg in aptly.pkgs %}
+      - {{ pkg }}
+      {% endfor %}
     - refresh: True
+{% endif %}
 
-# dependency for publishing
-bzip2:
-  pkg.installed
-
+{% if aptly.create_user %}
 aptly_user:
   user.present:
     - name: aptly
     - shell: /bin/bash
-    - home: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
+    - home: {{ aptly.homedir }}
+    {% if aptly.install_packages %}
     - require:
-      - pkg: aptly
-    {% if salt['pillar.get']('aptly:user:uid', 0) %}
-    - uid: {{ salt['pillar.get']('aptly:user:uid') }}
+      - pkg: aptly_packages
     {% endif %}
-    {% if salt['pillar.get']('aptly:user:gid', 0) %}
-    - gid: {{ salt['pillar.get']('aptly:user:gid') }}
+    {% if aptly.user.uid %}
+    - uid: {{ aptly.user.uid }}
+    {% endif %}
+    {% if aptly.user.gid %}
+    - gid: {{ aptly.user.gid }}
     - gid_from_name: True
     {% endif %}
+{% endif %}

@@ -1,20 +1,20 @@
-{% set gpg_command = salt['pillar.get']('aptly:gpg_command', 'gpg') %}
+{% from "aptly/map.jinja" import aptly with context %}
+
+{% set gpgid = salt['pillar.get']('aptly:gpg_keypair_id', '') %}
 
 include:
   - aptly
 
 aptly_homedir:
   file.directory:
-    - name: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
+    - name: {{ aptly.homedir }}
     - user: aptly
     - group: aptly
     - mode: 755
-    - require:
-      - user: aptly_user
 
 aptly_rootdir:
   file.directory:
-    - name: {{ salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly') }}
+    - name: {{ aptly.rootdir }}
     - user: aptly
     - group: aptly
     - mode: 755
@@ -24,7 +24,7 @@ aptly_rootdir:
 
 aptly_conf:
   file.managed:
-    - name: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}/.aptly.conf
+    - name: {{ aptly.homedir }}/.aptly.conf
     - source: salt://aptly/files/.aptly.conf.jinja
     - template: jinja
     - user: aptly
@@ -33,24 +33,23 @@ aptly_conf:
     - require:
       - file: aptly_homedir
 
-{% if salt['pillar.get']('aptly:secure') %}
+{% if aptly.secure %}
 aptly_gpg_key_dir:
   file.directory:
-    - name: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}/.gnupg
+    - name: {{ aptly.homedir }}/.gnupg
     - user: aptly
     - group: aptly
     - mode: 700
     - require:
       - file: aptly_homedir
 
-{% set gpgprivfile = '{}/.gnupg/secret.gpg'.format(salt['pillar.get']('aptly:homedir', '/var/lib/aptly')) %}
+{% set gpgprivfile = '{}/.gnupg/secret.gpg'.format(aptly.homedir) %}
 # goes in a different path so it's fetchable by the pkgrepo module
-{% set gpgpubfile = '{}/public/public.gpg'.format(salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly')) %}
-{% set gpgid = salt['pillar.get']('aptly:gpg_keypair_id', '') %}
+{% set gpgpubfile = '{}/public/public.gpg'.format(aptly.rootdir) %}
 
 aptly_pubdir:
   file.directory:
-    - name: {{ salt['pillar.get']('aptly:rootdir', '/var/lib/aptly/.aptly') }}/public
+    - name: {{ aptly.rootdir }}/public
     - user: aptly
     - group: aptly
 
@@ -76,21 +75,21 @@ gpg_pub_key:
 
 import_gpg_pub_key:
   cmd.run:
-    - name: { gpg_command }} --no-tty --import {{ gpgpubfile }}
+    - name: {{ aptly.gpg_command }} --no-tty --import {{ gpgpubfile }}
     - runas: aptly
-    - unless: { gpg_command }} --no-tty --list-keys | grep '{{ gpgid }}'
+    - unless: {{ aptly.gpg_command }} --no-tty --list-keys | grep '{{ gpgid }}'
     - env:
-      - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
+      - HOME: {{ aptly.homedir }}
     - require:
       - file: aptly_gpg_key_dir
 
 import_gpg_priv_key:
   cmd.run:
-    - name: { gpg_command }} --no-tty --allow-secret-key-import --import {{ gpgprivfile }}
+    - name: {{ aptly.gpg_command }} --no-tty --allow-secret-key-import --import {{ gpgprivfile }}
     - runas: aptly
-    - unless: { gpg_command }} --no-tty --list-secret-keys | grep '{{ gpgid }}'
+    - unless: {{ aptly.gpg_command }} --no-tty --list-secret-keys | grep '{{ gpgid }}'
     - env:
-      - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
+      - HOME: {{ aptly.homedir }}
     - require:
       - file: aptly_gpg_key_dir
 {% endif %}

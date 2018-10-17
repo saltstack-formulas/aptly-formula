@@ -1,6 +1,16 @@
 aptly:
-  homedir: /var/lib/aptly
-  rootdir: /var/lib/aptly/repo
+  lookup:
+    homedir: /var/lib/aptly
+    rootdir: /var/lib/aptly/repo
+    use_aptly_repo: True
+    install_packages: True
+    create_user: True
+    secure: True
+    gpg_command: 'gpg'
+    gpg_keyring: 'trustedkeys.gpg'
+    user:
+      uid: 0
+      gid: 0
   architectures:
     - amd64
     - i386
@@ -21,6 +31,7 @@ aptly:
     google-earth-main:
       url: http://dl.google.com/linux/earth/deb/
       distribution: stable
+      keyserver: keys.gnupg.net
       components:
         - main
       keyids:
@@ -38,7 +49,6 @@ aptly:
         - DE57BFBE
       architectures:
         - amd64
-  secure: True
   s3Endpoints:
     test:
       region: us-west-2
@@ -50,7 +60,6 @@ aptly:
       storageClass: ""
       encryptionMethod: ""
       plusWorkaround: "false"
-  gpg_command: 'gpg'
   gpg_keypair_id: 00000000
   gpg_passphrase: 'my voice is my passport'
   gpg_pub_key: |

@@ -1,0 +1,19 @@
+{% set aptly = salt['grains.filter_by']({
+    'default': {
+      'homedir': '/var/lib/aptly',
+      'rootdir': '/var/lib/aptly/.aptly',
+      'use_aptly_repo': True,
+      'install_packages': True,
+      'create_user': True,
+      'secure': True,
+      'gpg_command': 'gpg',
+      'gpg_keyring': 'trustedkeys.gpg',
+      'user': {
+        'uid': 0,
+        'gid': 0,
+      },
+    },
+    'Debian': {
+      'pkgs': ['aptly', 'bzip2', 'gnupg1', 'gpgv1'],
+    },
+}, merge=salt['pillar.get']('aptly:lookup'), base='default') %}

@@ -49,6 +49,19 @@ aptly:
         - DE57BFBE
       architectures:
         - amd64
+    stretch:
+      url: http://ftp.fr.debian.org/debian/
+      distribution: stretch
+      components:
+        - main
+      architectures:
+        - amd64
+      filter:
+        - Priority (required)
+        - Priority (important)
+        - Priority (standard)
+        - bash
+      filter-with-deps: true
   s3Endpoints:
     test:
       region: us-west-2

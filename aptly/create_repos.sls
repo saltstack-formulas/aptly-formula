@@ -1,5 +1,7 @@
 # Set up our Aptly repos
 
+{% from "aptly/map.jinja" import aptly with context %}
+
 include:
   - aptly
   - aptly.aptly_config

@@ -32,11 +32,11 @@ create_{{ mirror }}_mirror:
 {% endfor %}
 
 {% for keyid in opts['keyids'] %}
-add_{{ mirrorloop }}_{{keyid}}_gpg_key:
+add_{{ mirrorloop }}_{{ keyid }}_gpg_key:
   cmd.run:
-    - name: {{ aptly.gpg_command }} --no-default-keyring --keyring {{ aptly.gpg_keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{keyid}}
+    - name: {{ aptly.gpg_command }} --no-default-keyring --keyring {{ aptly.gpg_keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{ keyid }}
     - runas: aptly
-    - unless: {{ aptly.gpg_command }} --list-keys --keyring {{ aptly.gpg_keyring }}  | grep {{keyid}}
+    - unless: {{ aptly.gpg_command }} --list-keys --keyring {{ aptly.gpg_keyring }} | grep {{ keyid }}
 {% endfor %}
   {% elif opts['keyid'] is defined %}
       - cmd: add_{{ mirror }}_gpg_key
@@ -45,7 +45,7 @@ add_{{ mirror }}_gpg_key:
   cmd.run:
     - name: {{ aptly.gpg_command }} --no-default-keyring --keyring {{ aptly.gpg_keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{ opts['keyid'] }}
     - runas: aptly
-    - unless: {{ aptly.gpg_command }} --list-keys --keyring {{ aptly.gpg_keyring }}  | grep {{ opts['keyid'] }}
+    - unless: {{ aptly.gpg_command }} --list-keys --keyring {{ aptly.gpg_keyring }} | grep {{ opts['keyid'] }}
   {% elif opts['key_url'] is defined %}
       - cmd: add_{{ mirror }}_gpg_key
 
@@ -53,7 +53,7 @@ add_{{ mirror }}_gpg_key:
   cmd.run:
     - name: {{ aptly.gpg_command }} --no-default-keyring --keyring {{ aptly.gpg_keyring }} --fetch-keys {{ opts['key_url'] }}
     - runas: aptly
-    - unless: {{ aptly.gpg_command }} --list-keys --keyring {{ aptly.gpg_keyring }}  | grep {{keyid}}
+    - unless: {{ aptly.gpg_command }} --list-keys --keyring {{ aptly.gpg_keyring }} | grep {{ keyid }}
   {% endif %}
 
 {# Edit mirror to setup filters when needed #}

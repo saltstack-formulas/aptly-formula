@@ -22,7 +22,7 @@ publish_{{ repo }}_{{ distribution }}_repo:
     # NOTE: You may have to run this command manually the first time. The next
     # version of aptly is supposed to have a -batch option to pass -no-tty to
     # the gpg calls.
-    - name: aptly publish repo -force-overwrite=true -batch=true -distribution="{{ distribution }}" -component='{{ components_list }}' -architectures='{{ architectures | join(",") }}' {% for arg in optional_args %} {% if arg[1] %} {{ "-{}={}".format(arg[0], arg[1]) }} {% endif %} {% endfor %}  {{ repo_list|join(' ') }} {% if prefix  %} {{ prefix }} {% endif %}
+    - name: {{ aptly.aptly_command }} publish repo -force-overwrite=true -batch=true -distribution="{{ distribution }}" -component='{{ components_list }}' -architectures='{{ architectures | join(",") }}' {% for arg in optional_args %} {% if arg[1] %} {{ "-{}={}".format(arg[0], arg[1]) }} {% endif %} {% endfor %}  {{ repo_list|join(' ') }} {% if prefix  %} {{ prefix }} {% endif %}
     - runas: aptly
     - env:
       - HOME: {{ aptly.homedir }}

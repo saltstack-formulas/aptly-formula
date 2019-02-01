@@ -25,6 +25,11 @@ aptly_packages:
 
 {% if aptly.create_user %}
 aptly_user:
+  group.present:
+    - name: aptly
+    {% if aptly.user.gid %}
+    - gid: {{ aptly.user.gid }}
+    {% endif %}
   user.present:
     - name: aptly
     - shell: /bin/bash

@@ -1,7 +1,7 @@
 {% from "aptly/map.jinja" import aptly with context %}
 
 {% set gpgid = salt['pillar.get']('aptly:gpg_keypair_id', '') %}
-
+{% set pass = salt['pillar.get']('aptly:gpg_passphrase', '') %}
 include:
   - aptly
 
@@ -75,7 +75,7 @@ gpg_pub_key:
 
 import_gpg_pub_key:
   cmd.run:
-    - name: {{ aptly.gpg_command }} {{ aptly.passphrase }} --no-tty --import {{ gpgpubfile }};true
+    - name: {{ aptly.gpg_command }} --no-tty --import {{ gpgpubfile }};true
     - runas: aptly
     - unless: {{ aptly.gpg_command }} --no-tty --list-keys | grep '{{ gpgid }}'
     - env:
@@ -85,7 +85,7 @@ import_gpg_pub_key:
 
 import_gpg_priv_key:
   cmd.run:
-    - name: {{ aptly.gpg_command }} --no-tty --allow-secret-key-import --import {{ gpgprivfile }}
+    - name: {{ aptly.gpg_command }} {{ pass }} --no-tty --allow-secret-key-import --import {{ gpgprivfile }}
     - runas: aptly
     - unless: {{ aptly.gpg_command }} --no-tty --list-secret-keys | grep '{{ gpgid }}'
     - env:

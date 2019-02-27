@@ -7,19 +7,22 @@
   "architectures": [{{ architectures }}],
   {% else %}
   "architectures": {{ architectures|json }},
-  {%- endif -%}
+  {%- endif %}
   "dependencyFollowSuggests": false,
   "dependencyFollowRecommends": false,
   "dependencyFollowAllVariants": false,
   "dependencyFollowSource": false,
-{% if salt['pillar.get']('aptly:secure') %}
+{% if salt['pillar.get']('aptly:lookup:secure') %}
   "gpgDisableSign": false,
   "gpgDisableVerify": false,
 {% else %}
   "gpgDisableSign": true,
   "gpgDisableVerify": true,
 {% endif %}
+  "downloadConcurrency": 4,
   "downloadSourcePackages": false,
+  "downloadSpeedLimit": 0,
+  
   "ppaDistributorID": "ubuntu",
   "ppaCodename": ""
 {%- if salt['pillar.get']('aptly:s3Endpoints')|length -%},

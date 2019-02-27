@@ -1,6 +1,6 @@
 {% set architectures = salt['pillar.get']('aptly:architectures', []) %}
 {
-  "rootDir": "{{ salt['pillar.get']('aptly:rootdir') }}",
+  "rootDir": "{{ salt['pillar.get']('aptly:lookup:rootdir') }}",
   "downloadConcurrency": 4,
   {# this is to remain backwards compatability to when pillars accepted a comma delimited string, preferred method is a list #}
   {%- if architectures is string -%}

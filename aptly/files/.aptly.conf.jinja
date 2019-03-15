@@ -1,6 +1,7 @@
+{% from "aptly/map.jinja" import aptly with context %}
 {% set architectures = salt['pillar.get']('aptly:architectures', []) %}
 {
-  "rootDir": "{{ salt['pillar.get']('aptly:rootdir') }}",
+  "rootDir": "{{ aptly.rootdir }}",
   "downloadConcurrency": 4,
   {# this is to remain backwards compatability to when pillars accepted a comma delimited string, preferred method is a list #}
   {%- if architectures is string -%}
@@ -12,7 +13,7 @@
   "dependencyFollowRecommends": false,
   "dependencyFollowAllVariants": false,
   "dependencyFollowSource": false,
-{% if salt['pillar.get']('aptly:secure') %}
+{% if aptly.secure %}
   "gpgDisableSign": false,
   "gpgDisableVerify": false,
 {% else %}

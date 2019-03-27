@@ -26,12 +26,12 @@ aptly_packages:
 {% if aptly.create_user %}
 aptly_user:
   group.present:
-    - name: aptly
+    - name: {{ aptly.groupname }}
     {% if aptly.user.gid %}
     - gid: {{ aptly.user.gid }}
-    {% endif %} 
+    {% endif %}
   user.present:
-    - name: aptly
+    - name: {{ aptly.username }}
     - shell: /bin/bash
     - home: {{ aptly.homedir }}
     {% if aptly.install_packages %}

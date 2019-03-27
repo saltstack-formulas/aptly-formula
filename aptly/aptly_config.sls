@@ -9,14 +9,14 @@ aptly_homedir:
   file.directory:
     - name: {{ aptly.homedir }}
     - user: {{ aptly.username }}
-    - group: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 755
 
 aptly_rootdir:
   file.directory:
     - name: {{ aptly.rootdir }}
     - user: {{ aptly.username }}
-    - group: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 755
     - makedirs: True
     - require:
@@ -28,7 +28,7 @@ aptly_conf:
     - source: salt://aptly/files/.aptly.conf.jinja
     - template: jinja
     - user: {{ aptly.username }}
-    - group: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 664
     - require:
       - file: aptly_homedir
@@ -38,7 +38,7 @@ aptly_gpg_key_dir:
   file.directory:
     - name: {{ aptly.homedir }}/.gnupg
     - user: {{ aptly.username }}
-    - group: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 700
     - require:
       - file: aptly_homedir
@@ -51,14 +51,14 @@ aptly_pubdir:
   file.directory:
     - name: {{ aptly.rootdir }}/public
     - user: {{ aptly.username }}
-    - group: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
 
 gpg_priv_key:
   file.managed:
     - name: {{ gpgprivfile }}
     - contents_pillar: aptly:gpg_priv_key
     - user: {{ aptly.username }}
-    - group: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 700
     - require:
       - file: aptly_gpg_key_dir
@@ -68,7 +68,7 @@ gpg_pub_key:
     - name: {{ gpgpubfile }}
     - contents_pillar: aptly:gpg_pub_key
     - user: {{ aptly.username }}
-    - group: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 755
     - require:
       - file: aptly_gpg_key_dir

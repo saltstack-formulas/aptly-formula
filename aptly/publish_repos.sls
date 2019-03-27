@@ -1,9 +1,9 @@
 {% from "aptly/map.jinja" import aptly with context %}
 
-{% set architectures = pillar.get']('aptly:architectures', {}) %}
+{% set architectures = salt['pillar.get']('aptly:architectures', {}) %}
 {% set gpgid = salt['pillar.get']('aptly:gpg_keypair_id', '') %}
 {% set gpgpassphrase = salt['pillar.get']('aptly:gpg_passphrase', '') %}
-{% set repos = pillar.get']('aptly:repos', {}) %}
+{% set repos = salt['pillar.get']('aptly:repos', {}) %}
 
 include:
   - aptly.create_repos
@@ -11,7 +11,7 @@ include:
 {% set optional_args = [ ('gpg-key', gpgid), ('passphrase', gpgpassphrase) ] %}
 {% for repo, opts in repos.items() %}
   {% set components_list = opts['components']|join(',') %}
-  {% set prefix = opts.get('prefix', '') %} 
+  {% set prefix = opts.get('prefix', '') %}
   {% for distribution in opts['distributions'] %}
     {% set repo_list = [] %}
     {% for component in opts['components'] %}

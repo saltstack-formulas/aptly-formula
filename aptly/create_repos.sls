@@ -14,7 +14,7 @@ create_{{ repo_name }}_repo:
   cmd.run:
     - name: {{ aptly.aptly_command }} repo create -distribution="{{ distribution }}" -comment="{{ opts['comment'] }}" -component="{{ component }}" {{ repo_name }}
     - unless: {{ aptly.aptly_command }} repo show {{ repo_name }}
-    - runas: aptly
+    - runas: {{ aptly.username }}
     - env:
       - HOME: {{ aptly.homedir }}
     - require:
@@ -34,7 +34,7 @@ create_{{ repo_name }}_repo:
 add_{{ repo_name }}_pkgs:
   cmd.run:
     - name: {{ aptly.aptly_command }} repo add -force-replace=true -remove-files=true {{ repo_name }} {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }}
-    - runas: aptly
+    - runas: {{ aptly.username }}
     - env:
       - HOME: {{ aptly.homedir }}
     - onlyif:

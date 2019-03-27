@@ -27,7 +27,7 @@ create_{{ repo_name }}_repo:
     - group: root
     - mode: 777
     - makedirs: True
-        {% set numcurrentpkgs = salt['cmd.run'](aptly.aptly_command ~ ' repo show ' ~ repo_name ~ ' | tail -n1 | cut -f4 -d" "', user='aptly', env="[{\'HOME\':\'' ~ homedir ~ '\'}]") %}
+        {% set numcurrentpkgs = salt['cmd.run'](aptly.aptly_command ~ ' repo show ' ~ repo_name ~ ' | tail -n1 | cut -f4 -d" "', runas='aptly', env="[{\'HOME\':\'' ~ homedir ~ '\'}]") %}
         {% set pkgsinpkgdir = salt['file.find']('/srv/dist/dist/repo', type='f', iregex='.*(deb|udeb|dsc)$')|count %}
         {% if numcurrentpkgs != pkgsinpkgdir %}
           {# we dont  have all the packages loaded, add all packages in opts['pkgdir'] #}

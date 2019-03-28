@@ -8,15 +8,15 @@ include:
 aptly_homedir:
   file.directory:
     - name: {{ aptly.homedir }}
-    - user: aptly
-    - group: aptly
+    - user: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 755
 
 aptly_rootdir:
   file.directory:
     - name: {{ aptly.rootdir }}
-    - user: aptly
-    - group: aptly
+    - user: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 755
     - makedirs: True
     - require:
@@ -27,8 +27,8 @@ aptly_conf:
     - name: {{ aptly.homedir }}/.aptly.conf
     - source: salt://aptly/files/.aptly.conf.jinja
     - template: jinja
-    - user: aptly
-    - group: aptly
+    - user: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 664
     - require:
       - file: aptly_homedir
@@ -37,8 +37,8 @@ aptly_conf:
 aptly_gpg_key_dir:
   file.directory:
     - name: {{ aptly.homedir }}/.gnupg
-    - user: aptly
-    - group: aptly
+    - user: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 700
     - require:
       - file: aptly_homedir
@@ -50,15 +50,15 @@ aptly_gpg_key_dir:
 aptly_pubdir:
   file.directory:
     - name: {{ aptly.rootdir }}/public
-    - user: aptly
-    - group: aptly
+    - user: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
 
 gpg_priv_key:
   file.managed:
     - name: {{ gpgprivfile }}
     - contents_pillar: aptly:gpg_priv_key
-    - user: aptly
-    - group: aptly
+    - user: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 700
     - require:
       - file: aptly_gpg_key_dir
@@ -67,8 +67,8 @@ gpg_pub_key:
   file.managed:
     - name: {{ gpgpubfile }}
     - contents_pillar: aptly:gpg_pub_key
-    - user: aptly
-    - group: aptly
+    - user: {{ aptly.username }}
+    - group: {{ aptly.groupname }}
     - mode: 755
     - require:
       - file: aptly_gpg_key_dir
@@ -76,7 +76,7 @@ gpg_pub_key:
 import_gpg_pub_key:
   cmd.run:
     - name: {{ aptly.gpg_command }} --no-tty --import {{ gpgpubfile }}
-    - runas: aptly
+    - runas: {{ aptly.username }}
     - unless: {{ aptly.gpg_command }} --no-tty --list-keys | grep '{{ gpgid }}'
     - env:
       - HOME: {{ aptly.homedir }}
@@ -86,7 +86,7 @@ import_gpg_pub_key:
 import_gpg_priv_key:
   cmd.run:
     - name: {{ aptly.gpg_command }} --no-tty --allow-secret-key-import --import {{ gpgprivfile }}
-    - runas: aptly
+    - runas: {{ aptly.username }}
     - unless: {{ aptly.gpg_command }} --no-tty --list-secret-keys | grep '{{ gpgid }}'
     - env:
       - HOME: {{ aptly.homedir }}

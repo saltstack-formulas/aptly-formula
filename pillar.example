@@ -8,6 +8,8 @@ aptly:
     secure: True
     gpg_command: 'gpg'
     gpg_keyring: 'trustedkeys.gpg'
+    username: aptly
+    groupname: aptly
     user:
       uid: 0
       gid: 0

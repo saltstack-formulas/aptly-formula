@@ -21,7 +21,7 @@ create_{{ mirror }}_mirror:
   cmd.run:
     - name: {{ create_mirror_cmd }}
     - unless: {{ aptly.aptly_command }} mirror show {{ mirror }}
-    - runas: aptly
+    - runas: {{ aptly.username }}
     - env:
       - HOME: {{ aptly.homedir }}
     - require:
@@ -35,7 +35,7 @@ create_{{ mirror }}_mirror:
 add_{{ mirrorloop }}_{{ keyid }}_gpg_key:
   cmd.run:
     - name: {{ aptly.gpg_command }} --no-default-keyring --keyring {{ aptly.gpg_keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{ keyid }}
-    - runas: aptly
+    - runas: {{ aptly.username }}
     - unless: {{ aptly.gpg_command }} --list-keys --keyring {{ aptly.gpg_keyring }} | grep {{ keyid }}
 {% endfor %}
   {% elif opts['keyid'] is defined %}
@@ -44,7 +44,7 @@ add_{{ mirrorloop }}_{{ keyid }}_gpg_key:
 add_{{ mirror }}_gpg_key:
   cmd.run:
     - name: {{ aptly.gpg_command }} --no-default-keyring --keyring {{ aptly.gpg_keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{ opts['keyid'] }}
-    - runas: aptly
+    - runas: {{ aptly.username }}
     - unless: {{ aptly.gpg_command }} --list-keys --keyring {{ aptly.gpg_keyring }} | grep {{ opts['keyid'] }}
   {% elif opts['key_url'] is defined %}
       - cmd: add_{{ mirror }}_gpg_key
@@ -52,7 +52,7 @@ add_{{ mirror }}_gpg_key:
 add_{{ mirror }}_gpg_key:
   cmd.run:
     - name: {{ aptly.gpg_command }} --no-default-keyring --keyring {{ aptly.gpg_keyring }} --fetch-keys {{ opts['key_url'] }}
-    - runas: aptly
+    - runas: {{ aptly.username }}
     - unless: {{ aptly.gpg_command }} --list-keys --keyring {{ aptly.gpg_keyring }} | grep {{ keyid }}
   {% endif %}
 
@@ -70,7 +70,7 @@ add_{{ mirror }}_gpg_key:
 edit_{{ mirror }}_mirror:
   cmd.run:
     - name: {{ edit_mirror_cmd }} {{ filter_args }} {{ mirror }}
-    - runas: aptly
+    - runas: {{ aptly.username }}
     - onlyif: {{ aptly.aptly_command }} mirror show {{ mirror }}
     - env:
       - HOME: {{ aptly.homedir }}

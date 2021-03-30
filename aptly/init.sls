@@ -14,6 +14,7 @@ aptly_repo:
 {% endif %}
 
 {% if aptly.install_packages %}
+{% if aptly.pkgs is defined %}
 aptly_packages:
   pkg.installed:
     - pkgs:
@@ -21,6 +22,7 @@ aptly_packages:
       - {{ pkg }}
       {% endfor %}
     - refresh: True
+{% endif %}
 {% endif %}
 
 {% if aptly.create_user %}

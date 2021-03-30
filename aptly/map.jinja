@@ -19,4 +19,7 @@
     'Debian': {
       'pkgs': ['aptly', 'bzip2', 'gnupg1', 'gpgv1'],
     },
+    'RedHat': {
+      'pkgs': ['bzip2', 'gnupg2'],
+    },
 }, merge=salt['pillar.get']('aptly:lookup'), base='default') %}
